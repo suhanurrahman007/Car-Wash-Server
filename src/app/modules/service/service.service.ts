@@ -1,7 +1,9 @@
 /* eslint-disable prefer-const */
-import { minutesToTime, timeToMinutes } from './service.constant';
-import { TService, TSlot } from './service.interface';
-import { ServiceModel, SlotModel } from './service.model';
+import { minutesToTime, timeToMinutes } from '../slot/slot.constant';
+import { TSlot } from '../slot/slot.interface';
+import { SlotModel } from '../slot/slot.model';
+import { TService } from './service.interface';
+import { ServiceModel } from './service.model';
 
 const createServiceIntoDB = async (payload: TService) => {
   const result = await ServiceModel.create(payload);

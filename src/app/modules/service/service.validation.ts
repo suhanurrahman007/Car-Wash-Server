@@ -23,18 +23,10 @@ const updateServiceSchemaValidation = z.object({
   }),
 });
 
-const slotSchemaValidation = z.object({
-  body: z.object({
-    service: z.string(),
-    date: z.string(),
-    startTime: z.string(),
-    endTime: z.string(),
-  }),
-});
+
 
 
 export const serviceValidation = {
   createServiceSchemaValidation,
   updateServiceSchemaValidation,
-  slotSchemaValidation,
 };

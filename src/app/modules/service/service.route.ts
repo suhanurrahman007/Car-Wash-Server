@@ -4,6 +4,7 @@ import { serviceValidation } from './service.validation';
 import { ServiceController } from './service.controller';
 import Auth from '../../middlewares/auth';
 import { User_Role } from '../user/user.constant';
+import { slotValidation } from '../slot/slot.validation';
 const router = express.Router();
 
 router.post(
@@ -35,7 +36,7 @@ router.delete(
 router.post(
   '/slots',
   Auth(User_Role.admin),
-  validateRequest(serviceValidation.slotSchemaValidation),
+  validateRequest(slotValidation.slotSchemaValidation),
   ServiceController.createSlot,
 );
 
