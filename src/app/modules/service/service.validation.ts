@@ -10,7 +10,6 @@ const createServiceSchemaValidation = z.object({
   }),
 });
 
-
 const updateServiceSchemaValidation = z.object({
   body: z.object({
     name: z.string().min(1, 'Name is required').optional(),
@@ -23,7 +22,19 @@ const updateServiceSchemaValidation = z.object({
     isDeleted: z.boolean().optional(),
   }),
 });
+
+const slotSchemaValidation = z.object({
+  body: z.object({
+    service: z.string(),
+    date: z.string(),
+    startTime: z.string(),
+    endTime: z.string(),
+  }),
+});
+
+
 export const serviceValidation = {
   createServiceSchemaValidation,
   updateServiceSchemaValidation,
+  slotSchemaValidation,
 };
