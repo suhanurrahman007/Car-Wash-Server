@@ -14,4 +14,10 @@ router.post(
   validateRequest(BookingValidation.bookingSchemaValidation),
   BookingController.createBooking,
 );
+
+router.get(
+  '/',
+  Auth(User_Role.admin),
+  BookingController.getAllBooking,
+);
 export const BookingRoutes = router;

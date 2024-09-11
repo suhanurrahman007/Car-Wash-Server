@@ -88,6 +88,11 @@ const createBookingIntoDB = async (
   return booking;
 };
 
+const getAllBookingFromDB = async () => {
+  const result = await BookingModel.find();
+  return result;
+};
 export const BookingService = {
   createBookingIntoDB,
+  getAllBookingFromDB,
 };
