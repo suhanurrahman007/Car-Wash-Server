@@ -80,9 +80,19 @@ const createBookingIntoDB = async (
   // Check if slot was updated, if not, throw an error
   if (!slotUpdate) {
     throw new AppError(
-      httpStatus.NOT_FOUND,
+      httpStatus.BAD_REQUEST,
       'Slot not found or already booked',
     );
+  }
+
+  const booked = booking.slot.isBooked;
+
+  if (booked === 'booked') {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Slot already booked');
+  }
+
+  if (booked === 'canceled') {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Slot is canceled');
   }
 
   return booking;
@@ -92,7 +102,16 @@ const getAllBookingFromDB = async () => {
   const result = await BookingModel.find();
   return result;
 };
+
+const getMyBookingFromDB = async (user: JwtPayload) => {
+  const result = await BookingModel.find({
+    'customer.email': user.userEmail,
+  }).select('-customer');
+  return result;
+};
+
 export const BookingService = {
   createBookingIntoDB,
   getAllBookingFromDB,
+  getMyBookingFromDB,
 };

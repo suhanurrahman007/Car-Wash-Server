@@ -15,8 +15,17 @@ const createService = catchAsync(async (req, res) => {
 });
 
 const getAllService = catchAsync(async (req, res) => {
-  const result =
-    await ServiceService.getAllServiceFromDB();
+  const result = await ServiceService.getAllServiceFromDB();
+
+  // Check if no data is found
+  if (!result || result.length === 0) {
+    return sendResponse(res, {
+      success: false,
+      statusCode: httpStatus.NOT_FOUND,
+      message: 'No Data Found',
+      data: [],
+    });
+  }
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

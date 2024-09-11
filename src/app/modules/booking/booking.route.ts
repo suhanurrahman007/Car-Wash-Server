@@ -9,15 +9,17 @@ import validateRequest from '../../middlewares/validateRequest';
 const router = express.Router();
 
 router.post(
-  '/',
-  Auth(User_Role.admin),
+  '/bookings',
+  Auth(User_Role.user),
   validateRequest(BookingValidation.bookingSchemaValidation),
   BookingController.createBooking,
 );
 
+router.get('/bookings', Auth(User_Role.admin), BookingController.getAllBooking);
+
 router.get(
-  '/',
-  Auth(User_Role.admin),
-  BookingController.getAllBooking,
+  '/my-bookings',
+  Auth(User_Role.user),
+  BookingController.getMyBooking,
 );
 export const BookingRoutes = router;

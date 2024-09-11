@@ -1,9 +1,21 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-this-alias */
 import bcrypt from 'bcrypt';
-import { Schema, model } from 'mongoose';
+import { Model, Schema, model, Document } from 'mongoose';
 import config from '../../config';
 import { TUser } from './user.interface';
-const userSchema = new Schema<TUser>(
+
+// Define UserDocument to include the instance methods
+interface UserDocument extends Document, TUser {}
+
+// Define the UserModel interface to include static methods
+interface UserModel extends Model<UserDocument> {
+  isUserExists(email: string): Promise<UserDocument | null>;
+  isPasswordMatched(plainTextPassword: string, hashedPassword: string): Promise<boolean>;
+} 
+
+
+const userSchema = new Schema<UserDocument, UserModel>(
   {
     name: {
       type: String,
@@ -25,7 +37,7 @@ const userSchema = new Schema<TUser>(
     role: {
       type: String,
       enum: ['user', 'admin'],
-      default: 'user'
+      default: 'user',
     },
     address: {
       type: String,
@@ -65,4 +77,4 @@ userSchema.statics.isPasswordMatched = async function (
   return await bcrypt.compare(plainTextPassword, hashedPassword);
 };
 
-export const User = model<TUser>('User', userSchema);
+export const User = model<UserDocument, UserModel>('User', userSchema);

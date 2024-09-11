@@ -6,7 +6,6 @@ import { TService } from './service.interface';
 import { ServiceModel } from './service.model';
 
 const createServiceIntoDB = async (payload: TService) => {
-
   const result = await ServiceModel.create(payload);
   return result;
 };
@@ -42,7 +41,13 @@ const deleteServiceFromDB = async (id: string) => {
 const createSlotIntoDB = async (payload: TSlot) => {
   const { service, date, startTime, endTime } = payload;
 
-  const serviceDuration = 60;
+  const durationService = await ServiceModel.findById(service);
+
+  if (!durationService || !durationService.duration) {
+    throw new Error('Service duration is not defined');
+  }
+
+  const serviceDuration = durationService.duration;
 
   const startMinutes = timeToMinutes(startTime);
   const endMinutes = timeToMinutes(endTime);

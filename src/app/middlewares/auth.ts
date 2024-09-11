@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
 import catchAsync from './catchAsync';
-import AppError from '../error/AppError';
 import httpStatus from 'http-status';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../config';
@@ -12,10 +11,14 @@ const Auth = (...requiredRole: TUserRole[]) => {
     const authorizationHeader = req.headers.authorization;
 
     if (!authorizationHeader || !authorizationHeader.startsWith('Bearer ')) {
-      throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized!');
+      return res.status(httpStatus.UNAUTHORIZED).json({
+        success: false,
+        statusCode: httpStatus.UNAUTHORIZED,
+        message: 'You have no access to this route',
+      });
     }
 
-    const token = authorizationHeader.split(' ')[1]; 
+    const token = authorizationHeader.split(' ')[1];
     const decoded = jwt.verify(
       token,
       config?.jwt_access_secret as string,
@@ -26,10 +29,18 @@ const Auth = (...requiredRole: TUserRole[]) => {
     const user = await User.isUserExists(userEmail);
 
     if (!user) {
-      throw new AppError(httpStatus.NOT_FOUND, 'This user is not found !');
+      return res.status(httpStatus.UNAUTHORIZED).json({
+        success: false,
+        statusCode: httpStatus.UNAUTHORIZED,
+        message: 'You have no access to this route',
+      });
     }
     if (requiredRole && !requiredRole.includes(role)) {
-      throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized!');
+      return res.status(httpStatus.UNAUTHORIZED).json({
+        success: false,
+        statusCode: httpStatus.UNAUTHORIZED,
+        message: 'You have no access to this route',
+      });
     }
     req.user = decoded as JwtPayload;
     next();
