@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose';
 import { BookingDocument } from './booking.interface';
+import { vehicleTypes } from './booking.constant';
 
 const BookingSchema = new Schema<BookingDocument>(
   {
@@ -24,9 +25,12 @@ const BookingSchema = new Schema<BookingDocument>(
       date: { type: String, required: true },
       startTime: { type: String, required: true },
       endTime: { type: String, required: true },
-      isBooked: { type: String, default: 'available' },
+      isBooked: { type: String, default: "booked"},
     },
-    vehicleType: { type: String, required: true },
+    vehicleType: {
+      type: String,
+      enum: vehicleTypes,
+    },
     vehicleBrand: { type: String, required: true },
     vehicleModel: { type: String, required: true },
     manufacturingYear: { type: Number, required: true },

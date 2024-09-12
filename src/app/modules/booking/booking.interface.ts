@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Document } from "mongoose";
 import { Schema } from "mongoose";
 
@@ -39,11 +40,23 @@ type Slot = {
   isBooked: string;
 };
 
+export type TVehicleType =
+  | 'car'
+  | 'truck'
+  | 'SUV'
+  | 'van'
+  | 'motorcycle'
+  | 'bus'
+  | 'electricVehicle'
+  | 'hybridVehicle'
+  | 'bicycle'
+  | 'tractor';
+
 export type BookingDocument = Document & {
   customer: Customer;
   service: Service;
   slot: Slot;
-  vehicleType: string;
+  vehicleType: TVehicleType;
   vehicleBrand: string;
   vehicleModel: string;
   manufacturingYear: number;

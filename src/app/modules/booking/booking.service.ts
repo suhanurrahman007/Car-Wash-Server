@@ -29,7 +29,7 @@ const createBookingIntoDB = async (
 
   const serviceIdentify = await ServiceModel.findById(payload.serviceId);
   if (!serviceIdentify) {
-    throw new AppError(httpStatus.NOT_FOUND, 'service not found');
+    throw new AppError(httpStatus.NOT_FOUND, 'Service not found');
   }
 
   const service = {
@@ -41,9 +41,19 @@ const createBookingIntoDB = async (
     isDeleted: serviceIdentify.isDeleted,
   };
 
+  // Check if the slot is available
   const slotIdentify = await SlotModel.findById(payload.slotId);
   if (!slotIdentify) {
-    throw new AppError(httpStatus.NOT_FOUND, 'slot not found');
+    throw new AppError(httpStatus.NOT_FOUND, 'Slot not found');
+  }
+
+  // Check if the slot is already booked or canceled
+  if (slotIdentify.isBooked === 'booked') {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Slot already booked');
+  }
+
+  if (slotIdentify.isBooked === 'canceled') {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Slot is canceled');
   }
 
   const slot = {
@@ -52,7 +62,6 @@ const createBookingIntoDB = async (
     date: slotIdentify.date,
     startTime: slotIdentify.startTime,
     endTime: slotIdentify.endTime,
-    isBooked: slotIdentify.isBooked,
   };
 
   // Create the booking object
@@ -72,27 +81,16 @@ const createBookingIntoDB = async (
 
   // Update the slot to mark it as booked
   const slotUpdate = await SlotModel.findByIdAndUpdate(
-    payload.slotId,
+    slotIdentify._id,
     { isBooked: 'booked' },
     { new: true, runValidators: true },
   );
 
-  // Check if slot was updated, if not, throw an error
   if (!slotUpdate) {
     throw new AppError(
       httpStatus.BAD_REQUEST,
       'Slot not found or already booked',
     );
-  }
-
-  const booked = booking.slot.isBooked;
-
-  if (booked === 'booked') {
-    throw new AppError(httpStatus.BAD_REQUEST, 'Slot already booked');
-  }
-
-  if (booked === 'canceled') {
-    throw new AppError(httpStatus.BAD_REQUEST, 'Slot is canceled');
   }
 
   return booking;
