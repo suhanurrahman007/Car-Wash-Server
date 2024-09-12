@@ -1,5 +1,5 @@
-const createUserIntoDB = async () => {};
+// const createUserIntoDB = async () => {};
 
-export const UserServices = {
-  createUserIntoDB,
-};
+// export const UserServices = {
+//   createUserIntoDB,
+// };

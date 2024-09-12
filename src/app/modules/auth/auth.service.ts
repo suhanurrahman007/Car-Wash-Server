@@ -19,16 +19,19 @@ const loginUser = async (payload: TLoginUser) => {
     throw new AppError(httpStatus.NOT_FOUND, 'This user is not found !');
   }
 
-  const userPassword = await User.isPasswordMatched(payload?.password, user?.password)
+  const userPassword = await User.isPasswordMatched(
+    payload?.password,
+    user?.password,
+  );
 
-    if (!userPassword) {
-      throw new AppError(httpStatus.FORBIDDEN, 'Password do not matched');
-    }
+  if (!userPassword) {
+    throw new AppError(httpStatus.FORBIDDEN, 'Password do not matched');
+  }
   // create token and sent to the  client
 
   const jwtPayload = {
-    userEmail: user?.email,
-    role: user?.role,
+    userEmail: user?.email ?? '',
+    role: user?.role ?? 'user',
   };
 
   const accessToken = createToken(
